@@ -6,7 +6,7 @@ RH_ASK driver(2000, 2, 4, 5);
 void setup()
 {
     Serial.begin(115200);  // Initialize Serial Monitor
-    Serial1.begin(9600)
+    Serial1.begin(9600);
     if (!driver.init())
          Serial.println("init failed");
 }
@@ -33,14 +33,13 @@ void loop()
       // Serial.println((char)buf);
       Serial1.println(rcv);
       Serial.println(rcv);
-
-      //Optionally include delay for long messages
     }
+    else {
+      Serial1.println("Nothing Received");
+    }
+    //Optionally increase delay for long messages
+    delay(1000);
 }
-
-
-
-
 
 
 
