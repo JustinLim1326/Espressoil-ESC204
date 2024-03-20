@@ -6,6 +6,7 @@ RH_ASK driver(2000, 2, 4, 5);
 void setup()
 {
     Serial.begin(115200);  // Initialize Serial Monitor
+    Serial1.begin(9600)
     if (!driver.init())
          Serial.println("init failed");
 }
@@ -30,7 +31,10 @@ void loop()
       }
       Serial.print("Message: ");
       // Serial.println((char)buf);
+      Serial1.println(rcv);
       Serial.println(rcv);
+
+      //Optionally include delay for long messages
     }
 }
 
