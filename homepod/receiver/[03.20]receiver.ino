@@ -35,7 +35,7 @@ void loop()
       Serial.println(rcv);
     }
     else {
-      Serial1.println("Nothing Received");
+      Serial1.println("Nothing;Received");
     }
     //Optionally increase delay for long messages
     delay(1000);

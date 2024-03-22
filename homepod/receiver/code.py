@@ -390,14 +390,18 @@ space = 3
 #num_columns = 16
 
 while True:
-    str1 = "Herro"
+    str1 = "Not Recieved From Nano"
     str2 = "       ^_^"
 
     if uart.in_waiting > 10:
         received_data = uart.readline()
         if received_data:
             print("Received data:", received_data.decode().strip())
-            str1 = received_data.decode().strip()
+            received_str = received_data.decode().strip()
+            received_strs = received_str.split(";")
+            str1 = received_strs[0]
+            if len(received_strs) >= 2:
+                str2 = received_strs[1]
             #print("Type", type(str1))
 
     n = max(len(str1), len(str2))
