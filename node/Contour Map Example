@@ -1,0 +1,40 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import griddata
+
+data = np.array([
+    [0, 0, 18.75],
+    [0, 2, 0],
+    [0, 4, 16],
+    [0, 6, 2],
+    [-4, 2, 18],
+    [-4, 4, 35],
+    [-4, 6, 32],
+    [-4, 8, 15],
+    [-4, 10, 28],
+    [4, 0, 26],
+    [4, 2, 30],
+    [4, 4, 32],
+    [4, 6, 35],
+    [4, 8, 26.5],
+])
+
+x, y, values = data[:,0], data[:,1], data[:,2]
+
+X, Y = np.meshgrid(
+    np.linspace(np.min(x), np.max(x), 1000),
+    np.linspace(np.min(y), np.max(y), 1000)
+)
+
+interpolated_values = griddata((x, y), values, (X, Y), method='cubic')
+
+plt.contourf(X, Y, interpolated_values)
+plt.scatter(x, y, c=values, edgecolors='w', cmap='viridis')
+plt.legend()
+c = plt.colorbar()
+plt.xlim(-5, 5)
+plt.ylim(-1, 11)
+plt.xlabel('x (m)')
+plt.ylabel('y (m)')
+plt.title("Interpolated Values of Example Hydration Levels")
+plt.show()
