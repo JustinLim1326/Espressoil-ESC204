@@ -364,7 +364,7 @@ def ljust(string, width, fillchar=" "):
         return string + fillchar * (width - len(string))
 
 
-uart = busio.UART(None, board.GP1, baudrate=9600)
+uart = busio.UART(None, board.GP1, baudrate=115200)
 print(uart.in_waiting)
 
 lcd = GpioLcd(
@@ -389,26 +389,38 @@ space = 3
 #num_lines = 2
 #num_columns = 16
 
-while True:
-    str1 = "Herro"
-    str2 = "       ^_^"
+str1 = "Nothing Received"
+str2 = ""
 
-    if uart.in_waiting > 10:
+n = max(len(str1), len(str2))
+
+if n > 16:
+    str1 = ljust(str1, n)
+    str2 = ljust(str2, n)
+    str1 = str1 + " "*space + str1
+    str2 = str2 + " "*space + str2
+
+while True:
+    if uart.in_waiting > 30:
         received_data = uart.readline()
         if received_data:
             print("Received data:", received_data.decode().strip())
-            str1 = received_data.decode().strip()
+            received_str = received_data.decode().strip()
+            received_strs = received_str.split(";")
+            str1 = received_strs[0]
+            if len(received_strs) >= 2:
+                str2 = received_strs[1]
+            n = max(len(str1), len(str2))
+            if n > 16:
+                str1 = ljust(str1, n)
+                str1 = str1 + " "*space + str1
+                if len(received_strs) >= 2:
+                    str2 = ljust(str2, n)
+                    str2 = str2 + " "*space + str2
+
             #print("Type", type(str1))
 
-    n = max(len(str1), len(str2))
 
-    if n > 16:
-        str1 = ljust(str1, n)
-        str2 = ljust(str2, n)
-        str1 = str1 + " "*space + str1
-        str2 = str2 + " "*space + str2
-        #print(str1)
-        #print(str2)
 
     display_str1 = str1[x_offset:x_offset+16] if n > 16 else str1
     display_str2 = str2[x_offset:x_offset+16] if n > 16 else str2
