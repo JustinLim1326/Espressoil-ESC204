@@ -1,6 +1,5 @@
-import busio
-import digitalio
-import board
+# -*- coding:utf-8 -*-
+
 import time
 import l76x
 import math
@@ -26,7 +25,7 @@ optional:
 SET_SYNC_PPS_NMEA_ON
 SET_SYNC_PPS_NMEA_OFF
 '''
-gnss_l76b.l76x_send_command(gnss_l76b.SET_SYNC_PPS_NMEA_OFF)
+gnss_l76b.l76x_send_command(gnss_l76b.SET_SYNC_PPS_NMEA_ON)
 
 
 # make an object of NMEA0183 sentence parser
@@ -42,17 +41,11 @@ parser = MicropyGPS(location_formatting='dd')
 
 sentence = ''
 
-uart = busio.UART(board.GP4, None, baudrate=115200)
-
 while True:
     if gnss_l76b.uart_any():
         #print(parser)
         sentence = parser.update(chr(gnss_l76b.uart_receive_byte()[0]))
         if sentence:
-            coords = [parser.latitude[1],parser.longitude[1],parser.latitude[0],parser.longitude[0]]
-            message = ' '.join([str(coord) for coord in coords]) + '*'
-            print(message)
-            uart.write(message.encode("ascii", "ignore"))
 
             print('WGS84 Coordinate:Latitude(%c),Longitude(%c) %.9f,%.9f'%(parser.latitude[1],parser.longitude[1],parser.latitude[0],parser.longitude[0]))
             print('copy WGS84 coordinates and paste it on Google map web https://www.google.com/maps')
