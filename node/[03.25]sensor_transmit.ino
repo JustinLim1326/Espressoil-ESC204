@@ -10,6 +10,7 @@
 #define TxPin 0
 
 RH_ASK driver(2000, 4, 2, 5);
+String GPSData = "No GPS";
 
 DHT dht(DHTPIN, DHTTYPE);
 unsigned long prevDHTreadtime = 0;
@@ -49,11 +50,8 @@ void loop()
     }
 
     if (Serial1.available()) {
-        String GPSData = Serial1.readStringUntil((char)'*');
-        // Serial.println(datamessage);
-    }
-    else {
-        String GPSData = "No GPS";
+        GPSData = Serial1.readStringUntil((char)'*');
+        //Serial.println(GPSData);
     }
 
     if (currentMillis - prevsoilmoisturereadtime >= 3000)
@@ -76,7 +74,8 @@ void loop()
         Serial.println(moist);
 
         // Append moisture value to the message and send to receiver
-        String message = "M: " + String(moist) + " H: " + String(h) + " T: " + String(t) + ", " + String(f) + " Hic: " + String(hic) + " GPS: " + GPSData;
+        String message = "M: " + String(moist) + " H: " + String(h) + " T: " + String(t) + "; " + String(f) + " Hic: " + String(hic) + " GPS: " + GPSData;
+        Serial.println(message);
         driver.send((uint8_t *)message.c_str(), message.length());
         driver.waitPacketSent();
     }
