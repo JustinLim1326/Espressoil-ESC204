@@ -64,7 +64,7 @@ void loop()
     // Serial.println(GPSData);
   }
 
-  if (currentMillis - prevsoilmoisturereadtime >= 1000)
+  if (currentMillis - prevsoilmoisturereadtime >= 2000)
   { // Soil moisture sensor reading every 3000 milliseconds
     prevsoilmoisturereadtime = currentMillis;
 
@@ -112,69 +112,70 @@ void loop()
 
     if (moist > 50)
     {
-      message = "Too wet! Mulch mulch mulch!";
+      message = "Too wet!;Mulch mulch mulch!";
       setColor(0, 0, 1, 0, 0, 255); // Blue
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
       driver.waitPacketSent();
-      delay(500);
+      delay(1500);
     }
     if (moist < 10)
     {
-      message = "Too dry! Water water water!";
+      message = "Too dry!;Water water water!";
       setColor(1, 1, 0, 0, 0, 255); // Red green
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
       driver.waitPacketSent();
-      delay(500);
+      delay(1500);
     }
     if (t > 24.5)
     {
-      message = "Too hot! Irrigate!";
+      message = "Too hot!;Irrigate!";
       setColor(1, 0, 0, 255, 0, 0); // Red
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
       driver.waitPacketSent();
-      delay(500);
+      delay(1500);
     }
     if (t < 23)
     {
-      message = "Too cold! gg";
+      message = "Too cold!;gg";
       setColor(0, 1, 1, 0, 0, 255); // Cyan
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
       driver.waitPacketSent();
-      delay(500);
+      delay(1500);
     }
     if (h > 50)
     {
-      message = "Too humid! Mulch!!";
+      message = "Too humid!;Mulch!!";
       setColor(1, 1, 1, 0, 0, 255); // Purple
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
       driver.waitPacketSent();
-      delay(500);
+      delay(1500);
     }
     if (h < 25)
     {
-      message = "Too un-humid! Add shade and water!";
+      message = "Too un-humid!;Add shade and water!";
       setColor(1, 0, 1, 0, 0, 255); // Purple
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
       driver.waitPacketSent();
-      delay(500);
+      delay(1500);
     }
     if (moist < 50 and moist > 10 and t < 24 and t > 23 and h < 50 and h > 25)
     {
       message = "OK";
-      setColor(0, 1, 0, 0, 255, 0); // Green
+      setColor(0, 0, 0, 0, 0, 255); // Off
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
       driver.waitPacketSent();
-      delay(500);
+      delay(1500);
     }
 
-    // String message = "M: " + String(moist) + " H: " + String(h) + " T: " + String(t) + "; " + String(f) + " Hic: " + String(hic) + " GPS: " + GPSData;
+    message = "M: " + String(moist) + " H: " + String(h) + " T: " + String(t) + "; " + String(f) + " Hic: " + String(hic) + " GPS: " + GPSData;
+    Serial.println(message);
   }
 }
 
