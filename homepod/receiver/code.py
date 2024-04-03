@@ -365,19 +365,19 @@ def ljust(string, width, fillchar=" "):
 
 
 uart = busio.UART(None, board.GP1, baudrate=115200)
-print(uart.in_waiting)
+#print(uart.in_waiting)
 
 lcd = GpioLcd(
-    rs_pin=board.GP18,
-    enable_pin=board.GP20,
-    d0_pin=board.GP2,
-    d1_pin=board.GP3,
-    d2_pin=board.GP4,
-    d3_pin=board.GP5,
-    d4_pin=board.GP6,
-    d5_pin=board.GP7,
-    d6_pin=board.GP8,
-    d7_pin=board.GP9,
+    rs_pin=board.GP14,
+    enable_pin=board.GP15,
+    d0_pin=board.GP6,
+    d1_pin=board.GP7,
+    d2_pin=board.GP8,
+    d3_pin=board.GP9,
+    d4_pin=board.GP10,
+    d5_pin=board.GP11,
+    d6_pin=board.GP12,
+    d7_pin=board.GP13,
     num_lines=2,
     num_columns=16,
 )
