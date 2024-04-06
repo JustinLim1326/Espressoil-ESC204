@@ -200,23 +200,26 @@ void loop()
     Serial.print(moist);
     Serial.print(t);
     if( moist >= 900){
-    message += "Moisture sensor error";
-    Serial.println(message);
-    driver.send((uint8_t *)message.c_str(), message.length());
-    delay(500);
+      message += "Moisture sensor error";
+      Serial.println(message);
+      driver.send((uint8_t *)message.c_str(), message.length());
+      delay(500);
+      return;
     }
     if( t > 80){
-    message += "Temperature sensor error";
-    Serial.println(message);
-    driver.send((uint8_t *)message.c_str(), message.length());
-    delay(500);
-  }
+      message += "Temperature sensor error";
+      Serial.println(message);
+      driver.send((uint8_t *)message.c_str(), message.length());
+      delay(500);
+      return;
+    }
    if( h > 98){
-    message += "Humidity sensor error";
-    Serial.println(message);
-    driver.send((uint8_t *)message.c_str(), message.length());
-    delay(500);
-  }
+      message += "Humidity sensor error";
+      Serial.println(message);
+      driver.send((uint8_t *)message.c_str(), message.length());
+      delay(500);
+      return;
+    }
 
   //Recommendations
     if (moist >= 500)
@@ -266,8 +269,6 @@ void loop()
     driver.send((uint8_t *)message.c_str(), message.length());
     driver.waitPacketSent();
   }
-    
-
 }
 
 void setColor(int redBool, int greenBol, int blueBool, int redValue, int greenValue, int blueValue)
