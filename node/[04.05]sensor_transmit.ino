@@ -57,7 +57,14 @@ float min_humidity = 15.0;
 
 // Max and min moisture, since measrued in %, is 0 and 100
 float min_moisture = 0.0;
-float max_moisture = 100.0;
+float max_moisture = 1023.0;
+
+float max_sensor_temp = 80.0;
+float min_sensor_temp = -40.0;
+float max_sensor_humidity = 100.0;
+float min_sensor_humidity = 0.0;
+float min_sensor_moist = 0.0;
+float max_sensor_moist = 1023.0;
 
 void addElement(float element, float &val_1, float &val_2, float &val_3, float &val_4, float &val_5, int &currentSize) {
   if (currentSize == maxSize) {
@@ -124,6 +131,19 @@ void setup()
   pinMode(bluepin, OUTPUT);
 }
 
+bool clampError(float value, float min, float max)
+{
+  if (value < min)
+  {
+    return true;
+  }
+  if (value > max)
+  {
+    return true;
+  }
+  return false;
+}
+
 float clamp(float value, float min, float max)
 {
   if (value < min)
@@ -176,6 +196,21 @@ void loop()
     float h = dht.readHumidity();
     float t = dht.readTemperature();
     float hic = dht.computeHeatIndex(t, h, false);
+    String message = "";
+    if (clampError(t, min_sensor_temp, max_sensor_temp)){
+      message += "Temperature sensor error";
+      Serial.println(message);
+      driver.send((uint8_t *)message.c_str(), message.length());
+      delay(500);
+      return;
+    }
+    if (clampError(h, min_sensor_humidity, max_sensor_humidity)){
+      message += "Humidity sensor error";
+      Serial.println(message);
+      driver.send((uint8_t *)message.c_str(), message.length());
+      delay(500);
+      return;
+    }
 
     t = clamp(t, min_temp_, max_temp_);
     h = clamp(h, min_humidity, max_humidity);
@@ -186,6 +221,15 @@ void loop()
 
     // Gravity soil sensor reading
     int moist = analogRead(A1);
+
+    if (clampError(moist, min_sensor_moist, max_sensor_moist)){
+      message += "Moisture sensor error";
+      Serial.println(message);
+      driver.send((uint8_t *)message.c_str(), message.length());
+      delay(500);
+      return;
+    }
+    
     moist = clamp(moist, min_moisture, max_moisture);
 
     addElement(moist, moist_1, moist_2, moist_3, moist_4, moist_5, moist_current_size);
@@ -194,32 +238,6 @@ void loop()
     t = getAverage(t_1, t_2, t_3, t_4, t_5, t_current_size);
     hic = getAverage(hic_1, hic_2, hic_3, hic_4, hic_5, hic_current_size);
     moist = getAverage(moist_1, moist_2, moist_3, moist_4, moist_5, moist_current_size);
-
-    String message = "";
-    //error messages
-    Serial.print(moist);
-    Serial.print(t);
-    if( moist >= 900){
-      message += "Moisture sensor error";
-      Serial.println(message);
-      driver.send((uint8_t *)message.c_str(), message.length());
-      delay(500);
-      return;
-    }
-    if( t > 80){
-      message += "Temperature sensor error";
-      Serial.println(message);
-      driver.send((uint8_t *)message.c_str(), message.length());
-      delay(500);
-      return;
-    }
-   if( h > 98){
-      message += "Humidity sensor error";
-      Serial.println(message);
-      driver.send((uint8_t *)message.c_str(), message.length());
-      delay(500);
-      return;
-    }
 
   //Recommendations
     if (moist >= 500)
