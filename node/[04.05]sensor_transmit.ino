@@ -9,7 +9,6 @@
 #define RxPin 1
 #define TxPin 0
 
-
 RH_ASK driver(2000, 4, 2, 5);
 String GPSData = "No GPS";
 
@@ -48,7 +47,7 @@ float moist_4 = 0.0;
 float moist_5 = 0.0;
 int moist_current_size = 0;
 
-// Max temperatures in ethiopia can range from 15 to 32 degrees celsius with some tolerance 
+// Max temperatures in ethiopia can range from 15 to 32 degrees celsius with some tolerance
 float max_temp_ = 40.0;
 float min_temp_ = 5.0;
 
@@ -59,7 +58,7 @@ float min_humidity = 15.0;
 // Max and min moisture, range shown below is from testing soil mositure sensor
 float min_moisture = 0.0;
 float max_moisture = 1023.0;
-float whcs = 0.108488; //water holding capacity of soil 
+float whcs = 0.108488; // water holding capacity of soil
 
 float max_sensor_temp = 80.0;
 float min_sensor_temp = -40.0;
@@ -68,17 +67,21 @@ float min_sensor_humidity = 0.0;
 float min_sensor_moist = 0.0;
 float max_sensor_moist = 1023.0;
 
-void addElement(float element, float &val_1, float &val_2, float &val_3, float &val_4, float &val_5, int &currentSize) {
-  if (currentSize == maxSize) {
+void addElement(float element, float &val_1, float &val_2, float &val_3, float &val_4, float &val_5, int &currentSize)
+{
+  if (currentSize == maxSize)
+  {
     val_1 = val_2;
     val_2 = val_3;
     val_3 = val_4;
     val_4 = val_5;
     val_5 = element;
   }
-  else if (currentSize < maxSize) {
+  else if (currentSize < maxSize)
+  {
     currentSize++;
-    switch (currentSize) {
+    switch (currentSize)
+    {
     case 1:
       val_1 = element;
       break;
@@ -97,9 +100,11 @@ void addElement(float element, float &val_1, float &val_2, float &val_3, float &
     }
   }
 }
-float getAverage(float val_1, float val_2, float val_3, float val_4, float val_5, int currentSize) {
+float getAverage(float val_1, float val_2, float val_3, float val_4, float val_5, int currentSize)
+{
   float sum = 0;
-  switch (currentSize) {
+  switch (currentSize)
+  {
   case 1:
     sum = val_1;
     break;
@@ -199,14 +204,16 @@ void loop()
     float t = dht.readTemperature();
     float hic = dht.computeHeatIndex(t, h, false);
     String message = "";
-    if (clampError(t, min_sensor_temp, max_sensor_temp)){
+    if (clampError(t, min_sensor_temp, max_sensor_temp))
+    {
       message += "Temperature sensor error";
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
       delay(500);
       return;
     }
-    if (clampError(h, min_sensor_humidity, max_sensor_humidity)){
+    if (clampError(h, min_sensor_humidity, max_sensor_humidity))
+    {
       message += "Humidity sensor error";
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
@@ -224,7 +231,8 @@ void loop()
     // Gravity soil sensor reading
     int moist = analogRead(A1);
 
-    if (clampError(moist, min_sensor_moist, max_sensor_moist)){
+    if (clampError(moist, min_sensor_moist, max_sensor_moist))
+    {
       message += "Moisture sensor error";
       Serial.println(message);
       driver.send((uint8_t *)message.c_str(), message.length());
@@ -233,7 +241,7 @@ void loop()
     }
     moist = clamp(moist, min_moisture, max_moisture);
 
-    moist = moist*whcs; //conversion to whcs
+    moist = moist * whcs; // conversion to whcs
     addElement(moist, moist_1, moist_2, moist_3, moist_4, moist_5, moist_current_size);
 
     h = getAverage(h_1, h_2, h_3, h_4, h_5, h_current_size);
@@ -241,7 +249,7 @@ void loop()
     hic = getAverage(hic_1, hic_2, hic_3, hic_4, hic_5, hic_current_size);
     moist = getAverage(moist_1, moist_2, moist_3, moist_4, moist_5, moist_current_size);
 
-  //Recommendations
+    // Recommendations
     if (moist > 120)
     {
       message += "Too wet!;Mulch!/";
@@ -266,11 +274,10 @@ void loop()
       setColor(0, 1, 1, 0, 0, 255); // Cyan
       delay(500);
     }
-    if (h< 99 && h >= 50)
+    if (h < 99 && h >= 50)
     {
       message += "Too humid!;Mulch!/";
-      setColor(1, 1, 1, 0, 0, 255); // Purple
-      Serial.println(message);
+      setColor(1, 1, 1, 0, 0, 255); // White
       delay(500);
     }
     if (h <= 30)
