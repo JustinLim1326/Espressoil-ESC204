@@ -59,7 +59,7 @@ float min_humidity = 15.0;
 float min_moisture = 0.0;
 float max_moisture = 100.0;
 
-void addElement(int element, float &val_1, float &val_2, float &val_3, float &val_4, float &val_5, int &currentSize) {
+void addElement(float element, float &val_1, float &val_2, float &val_3, float &val_4, float &val_5, int &currentSize) {
   if (currentSize == maxSize) {
     val_1 = val_2;
     val_2 = val_3;
