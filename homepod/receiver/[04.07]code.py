@@ -4,7 +4,7 @@ import time
 import board
 import busio
 
-
+#LCD Address
 class LcdApi:
     LCD_CLR = 0x01  # DB0: clear display
     LCD_HOME = 0x02  # DB1: return to home position
@@ -201,7 +201,7 @@ class LcdApi:
         """Sleep for some time (given in microseconds)."""
         time.sleep(usecs / 1000000)
 
-
+#LCD Functions
 class GpioLcd(LcdApi):
     def __init__(
         self,
@@ -354,19 +354,17 @@ class GpioLcd(LcdApi):
         self.d4_pin.value = nibble & 0x01
         self.hal_pulse_enable()
 
-
-# Write your code here :-)
-
+#The ljust() method returns a left-justified string of a specified minimum width.
 def ljust(string, width, fillchar=" "):
     if len(string) >= width:
         return string
     else:
         return string + fillchar * (width - len(string))
 
-
+#Connect Raspberry Pi Pico to Arduino Nano
 uart = busio.UART(None, board.GP1, baudrate=115200)
-#print(uart.in_waiting)
 
+#Initialize LCD with approprirate pins
 lcd = GpioLcd(
     rs_pin=board.GP14,
     enable_pin=board.GP15,
@@ -381,55 +379,41 @@ lcd = GpioLcd(
     num_lines=2,
     num_columns=16,
 )
-#str1 = "  ||   ^_^   ||"
-#str2 = " ||||       ||||"
 
-x_offset = 0
-space = 3
-m = 0
-str_list = []
-cor_list= []
-#num_lines = 2
-#num_columns = 16
 
-str1 = "Nothing Received"
-str2 = "       ^_^"
+x_offset = 0    #Initialize the scrolling effect
+space = 3       #Space between the two strings
+m = 0           #Index for the string list for different reccomendations
+str_list = []   #List of string recommendations
+cor_list= []    #List of str_list for correcting inaccurate strings
 
+#Default LCD Display
 received_str = "Nothing Received;       ^_^/Please turn on;the node sensor"
-
-n = max(len(str1), len(str2))
-
-if n > 16:
-    str1 = ljust(str1, n)
-    str2 = ljust(str2, n)
-    str1 = str1 + " "*space + str1
-    str2 = str2 + " "*space + str2
-
-prev = 0
 
 while True:
     for k in range(max(n, 10)):
-        #print(uart.in_waiting)
-        #if uart.in_waiting > 0 and time.time() - prev > 3:
-        if uart.in_waiting > 0 and time.time() - prev > 3:
-            #prev = time.time()
+        if uart.in_waiting > 0: #Check if data is available to read
             received_data = uart.readline()
             if received_data:
-                print("Received data:", received_data.decode().strip())
                 received_str = received_data.decode().strip()
+                print("Received data:", received_str)
 
-                #print("Type", type(str1))
-
+        #Split reccomenations into seperate strings and return as list
         str_list = received_str.split("/")
+        
+        #Correcting the inaccurate strings
         cor_list.append(str_list)
         if len(cor_list)>5:
             if str_list not in cor_list[:-1]:
                 str_list = cor_list[-2]
             cor_list = cor_list[-5:]
         #print(cor_list)
-
-        m = m%len(str_list)
-        received_strs = str_list[m].split(";")
+        
+        
+        m = m%len(str_list) #Make sure m index is within the range of the list
+        received_strs = str_list[m].split(";") #Split the string into two strings for different lines on LCD
+        
+        #Create str1 and str2 for the two lines on the LCD
         str1 = received_strs[0]
         if len(received_strs) >= 2:
             str2 = received_strs[1]
@@ -440,14 +424,14 @@ while True:
             if len(received_strs) >= 2:
                 str2 = ljust(str2, n)
                 str2 = str2 + " "*space + str2
-
-
-
+        
+        #Scrolling effect
         display_str1 = str1[x_offset:x_offset+16] if n > 16 else str1
         display_str2 = str2[x_offset:x_offset+16] if n > 16 else str2
         #print(display_str1)
         #print(display_str2)
-
+        
+        #Display the strings on the LCD
         lcd.clear()
         lcd.move_to(0,0)
         lcd.putstr(display_str1)
@@ -455,11 +439,13 @@ while True:
         lcd.putstr(display_str2)
 
         #print("display")
-
+        
+        #Scrolling effect for the strings
         if n > 16:
             x_offset = (x_offset + 1)%(n-1+space)
 
         time.sleep(0.5)
-
+    
+    #Change m index for different reccomendation to display
     if len(str_list) != 0:
         m = (m + 1)%len(str_list)
