@@ -10,7 +10,6 @@ void setup()
     if (!driver.init())
          Serial.println("init failed");
 }
-
 void loop()
 {
     uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
@@ -18,21 +17,16 @@ void loop()
     
     if (driver.recv(buf, &buflen)) // Non-blocking
     {
-      // int i;
-
       // Message with a good checksum received, dump it.
-
-      // driver.printBuffer("Got:", buf, buflen);
-
       String rcv;
-
       for (int i = 0; i < buflen; i++){
         rcv += (char)buf[i];
       }
-      Serial.print("Message: ");
-      // Serial.println((char)buf);
-      Serial1.println(rcv);
-      Serial.println(rcv);
+      //error handling empty string
+      if(rcv != ""){
+        Serial.print("Message: ");
+        Serial1.println(rcv);
+        Serial.println(rcv);
+      }
     }
 }
-
