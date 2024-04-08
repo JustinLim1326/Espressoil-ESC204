@@ -72,7 +72,7 @@ float max_sensor_moist = 1023.0;   // max moisture possible by soil sensor
 String message = ""; // message to be sent to the homepod
 
 void addElement(float element, float &val_1, float &val_2, float &val_3, float &val_4, float &val_5, int &currentSize)
-''' Add element to rolling window '''
+// Add element to rolling window
 {
   if (currentSize == maxSize) // If we are at max size, shift all elements to the left and append to last element
   {
@@ -290,11 +290,13 @@ void loop() // Main loop
       setColor(0, 0, 0, 0, 0, 255); // Off
       delay(1500);                  // Delay for 1500 milliseconds
     }
-    message.remove(message.length() - 1);                                                                                        // Remove last character
+    message.remove(message.length() - 1);                                                                                        // Remove last character (The last / sign which is unnecessary in the homepod)
+    message += "+" + GPSData;                                                                                                    // Add GPS data to message seperated by + sign                   
     Serial.println(message);                                                                                                     // Print message
     String data = "M: " + String(moist) + " H: " + String(h) + " T: " + String(t) + " Hic: " + String(hic) + " GPS: " + GPSData; // Add data to message
     Serial.println(data);                                                                                                        // Print data
   }
+  // Sending message is done constantly at every loop to increase sending rate. 
   driver.send((uint8_t *)message.c_str(), message.length()); // Send message
   driver.waitPacketSent();                                   // Wait for packet to be sent
 }

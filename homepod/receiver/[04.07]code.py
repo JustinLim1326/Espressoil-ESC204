@@ -397,6 +397,9 @@ while True:
             if received_data:
                 received_str = received_data.decode().strip()
                 print("Received data:", received_str)
+                # Seperate the GPS data from the recommended strings
+                GPSData = received_str.split("+")[-1]
+                received_str = received_str.split("+")[0]
 
         #Split reccomenations into seperate strings and return as list
         str_list = received_str.split("/")
