@@ -250,43 +250,43 @@ void loop() // Main loop
     message = "";   // reset message
     if (moist > 70) // if moisture is greater than 70
     {
-      message += "Too wet!;Mulch!/"; // Add message to message string
+      message += "The soil is too wet;Please mulch the soil/"; // Add message to message string
       setColor(0, 0, 1, 0, 0, 255);  // Blue
       delay(1500);                   // Delay for 1500 milliseconds
     }
     if (moist < 30) // if moisture is less than 30
     {
-      message += "Too dry!;Water!/"; // Add message to message string
+      message += "The soil too dry;Please water the soil/"; // Add message to message string
       setColor(1, 1, 0, 0, 0, 255);  // Red green
       delay(1500);                   // Delay for 1500 milliseconds
     }
     if (t >= 27 && t <= 40) // if temperature is between 27 and 40
     {
-      message += "Too hot!;Irrigate!/"; // Add message to message string
+      message += "The temperature is too hot;Please irrigate the soil/"; // Add message to message string
       setColor(1, 0, 0, 255, 0, 0);     // Red
       delay(1500);                      // Delay for 1500 milliseconds
     }
     if (t <= 23) // if temperature is less than 23
     {
-      message += "Too cold!;Mulch!/"; // Add message to message string
+      message += "The temperature is too cold;Please mulch the soil/"; // Add message to message string
       setColor(0, 1, 1, 0, 0, 255);   // Cyan
       delay(1500);                    // Delay for 1500 milliseconds
     }
     if (h < 99 && h >= 50) // if humidity is between 50 and 99
     {
-      message += "Too humid!;Mulch!/"; // Add message to message string
+      message += "The air is too humid;Please mulch the soil/"; // Add message to message string
       setColor(1, 1, 1, 0, 0, 255);    // White
       delay(1500);                     // Delay for 1500 milliseconds
     }
     if (h <= 15) // if humidity is less than 15
     {
-      message += "Too arid!;Add shade!/"; // Add message to message string
+      message += "The air is too aird;Please add shade to the soil/"; // Add message to message string
       setColor(1, 0, 1, 0, 0, 255);       // Purple
       delay(1500);                        // Delay for 1500 milliseconds
     }
     if (moist <= 70 and moist >= 30 and t < 27 and t > 23 and h < 50 and h > 20) // if all conditions are met
     {
-      message = "OK/";              // Add message to message string
+      message = "The soil is in;perfect condition/";              // Add message to message string
       setColor(0, 0, 0, 0, 0, 255); // Off
       delay(1500);                  // Delay for 1500 milliseconds
     }
